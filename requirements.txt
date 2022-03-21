@@ -5,3 +5,4 @@ PyWavelets
 librosa
 scipy
 python-multipart
+pandas
