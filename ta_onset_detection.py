@@ -103,7 +103,8 @@ sigs, truths = process_audio()
 
 search = GridSearchCV(OnsetDetection(),
                    scoring=onset_scorer,
-                   param_grid=grid_params)
+                   param_grid=grid_params,
+                   verbose=2)
 
 search.fit(sigs, truths)
 
