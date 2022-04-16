@@ -1,17 +1,19 @@
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Request
+from fastapi.responses import HTMLResponse
 from utils.predict import do_transcription
 import sys
 import os
 from tempfile import NamedTemporaryFile
 from pathlib import Path
 import shutil
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
 
-
-@app.get("/")
-async def root():
-    return {"message": "Bye World"}
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("home.html", {"request": request})
 
 @app.post("/predict")
 async def predict_audio(upload_file: UploadFile = File(...)):
