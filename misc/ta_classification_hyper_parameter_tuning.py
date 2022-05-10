@@ -18,11 +18,11 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-training_file_mdb = open("MDB_44100.pickle", "rb")
+training_file_mdb = open("./datasets/MDB_44100.pickle", "rb")
 training_set_mdb = pickle.load(training_file_mdb)
 training_file_mdb.close()
 
-training_file_idmt = open("IDMT_44100.pickle", "rb")
+training_file_idmt = open("./datasets/IDMT_44100.pickle", "rb")
 training_set_idmt = pickle.load(training_file_idmt)
 training_file_idmt.close()
 
@@ -67,9 +67,7 @@ def train_test_model(params):
          )
   
   eval_result = model.evaluate(x_test, y_test[:, :3])
-  tf.keras.models.save_model(model, f"./grid_models/LSTM_{params['lstm_unit']}_unit_\
-  {params['lstm_activation']}_activation_\
-  {str(params['dropout']).replace('.', ',')}_dropout")
+  tf.keras.models.save_model(model, f"./grid_models/LSTM_{params['lstm_unit']}_unit_{params['lstm_activation']}_activation_{str(params['dropout']).replace('.', ',')}_dropout/")
 
   return history, eval_result
 
@@ -90,9 +88,7 @@ for lstm_unit in lstm_units:
 
             history, eval = train_test_model(hparams)
 
-            history_file = f"{lstm_unit}\
-            _{lstm_activation}\
-            _{str(dropout).replace('.', ',')}.pck"
+            history_file = f"{lstm_unit}_{lstm_activation}_{str(dropout).replace('.', ',')}.pck"
             history_file = open(history_file, "wb")
             pickle.dump(history, history_file)
             history_file.close()
@@ -107,5 +103,5 @@ for lstm_unit in lstm_units:
 data
 
 grid_search_result = pd.DataFrame(data)
-grid_search_result.to_csv("./search_result/grid_search_result.csv")
+grid_search_result.to_csv("./grid_search_result.csv")
 

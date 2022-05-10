@@ -1,6 +1,8 @@
 venv/*
+venv/
 */__pycache__/*
 __pycache__/*
 grid_models/*
 grid_models/
 search_results/*
+*.pck
