@@ -6,9 +6,9 @@ import os
 import math
 import tensorflow as tf
 
-model_kd = tf.keras.models.load_model('models\conv2d_kd')
-model_sd = tf.keras.models.load_model('models\conv2d_sd')
-model_hh = tf.keras.models.load_model('models\conv2d_hh')
+# model_kd = tf.keras.models.load_model('models\conv2d_kd')
+# model_sd = tf.keras.models.load_model('models\conv2d_sd')
+# model_hh = tf.keras.models.load_model('models\conv2d_hh')
 
 def get_onsets(audio_path, sr=44100):
   sig, sr = librosa.load(audio_path, sr=sr)
@@ -31,12 +31,13 @@ def parse_spectrogram(onset_times, fn_wav, sr=44100, n_fft=2048):
   return np.array(specs)
 
 def predict_classes(spectrograms: np.array):
+  pass
   # for spec in spectrograms:
-  preds_kd = model_kd.predict(spectrograms)
-  preds_sd = model_sd.predict(spectrograms)
-  preds_hh = model_hh.predict(spectrograms)
+  # preds_kd = model_kd.predict(spectrograms)
+  # preds_sd = model_sd.predict(spectrograms)
+  # preds_hh = model_hh.predict(spectrograms)
   
-  return preds_kd.round(), preds_sd.round(), preds_hh.round()
+  # return preds_kd.round(), preds_sd.round(), preds_hh.round()
 
 def create_tab(result_dict, bpm):
   return \
