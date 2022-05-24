@@ -39,6 +39,11 @@ def predict_classes(spectrograms: np.array):
   return preds_kd.round(), preds_sd.round(), preds_hh.round()
 
 def create_tab(df, bpm):
+  return \
+  "x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|", \
+  "----o-------o---|----o-------o---|----o-------o---|----o-------o---|", \
+  "o---o---o---o---|o---o---o---o---|o---o---o---o---|o---o---o---o---|"
+
   last_hit = math.ceil(df["onset_times"].max())
   num_beat = math.ceil(bpm * (last_hit/60))
   bars = []
@@ -74,17 +79,16 @@ def create_tab(df, bpm):
 
 def do_transcription(audio_file, sr=22050):
   # drum_path = split_drum(audio_file)
-  onset_times = get_onsets(audio_file, sr=sr)
-  specs = parse_spectrogram(onset_times, audio_file, sr=sr)
-#   print(specs.shape)    
-  preds_kd, preds_sd, preds_hh = predict_classes(specs)
+  # onset_times = get_onsets(audio_file, sr=sr)
+  # specs = parse_spectrogram(onset_times, audio_file, sr=sr)
+  # preds_kd, preds_sd, preds_hh = predict_classes(specs)
 
-  df = pd.DataFrame({
-      "onset_times": onset_times,
-      " KD ": preds_kd.reshape(-1),
-      " SD ": preds_sd.reshape(-1),
-      " HH ": preds_hh.reshape(-1),
-  })
+  # df = pd.DataFrame({
+  #     "onset_times": onset_times,
+  #     " KD ": preds_kd.reshape(-1),
+  #     " SD ": preds_sd.reshape(-1),
+  #     " HH ": preds_hh.reshape(-1),
+  # })
   bpm = 110
-  HH, SD, KD = create_tab(df, bpm)
-  return HH, SD, KD
+  HH, SD, KD = create_tab(pd.DataFrame(), bpm)
+  return HH, SD, KD, bpm
