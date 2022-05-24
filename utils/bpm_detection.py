@@ -22,7 +22,7 @@ import array
 import math
 import wave
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy
 import pywt
 from scipy import signal
@@ -173,5 +173,5 @@ if __name__ == "__main__":
     print("Completed!  Estimated Beats Per Minute:", bpm)
 
     n = range(0, len(correl))
-    plt.plot(n, abs(correl))
-    plt.show(block=True)
+    # plt.plot(n, abs(correl))
+    # plt.show(block=True)

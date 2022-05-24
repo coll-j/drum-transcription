@@ -1,8 +1,8 @@
 fastapi[all]
 tensorflow-cpu==2.8.0
-matplotlib
+# matplotlib
 PyWavelets
 librosa
 scipy
 python-multipart
-pandas
+# pandas
