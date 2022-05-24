@@ -2,7 +2,7 @@ import librosa
 import tensorflow as tf
 import numpy as np
 import os
-import pandas as pd
+# import pandas as pd
 import math
 import tensorflow as tf
 
@@ -38,7 +38,7 @@ def predict_classes(spectrograms: np.array):
   
   return preds_kd.round(), preds_sd.round(), preds_hh.round()
 
-def create_tab(df, bpm):
+def create_tab(result_dict, bpm):
   return \
   "x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|", \
   "----o-------o---|----o-------o---|----o-------o---|----o-------o---|", \
@@ -90,5 +90,5 @@ def do_transcription(audio_file, sr=22050):
   #     " HH ": preds_hh.reshape(-1),
   # })
   bpm = 110
-  HH, SD, KD = create_tab(pd.DataFrame(), bpm)
+  HH, SD, KD = create_tab({}, bpm)
   return HH, SD, KD, bpm
