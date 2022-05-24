@@ -6,3 +6,5 @@ grid_models/*
 grid_models/
 search_results/*
 *.pck
+datasets/
+datasets/*
