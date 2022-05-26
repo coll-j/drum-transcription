@@ -2,13 +2,13 @@ import librosa
 import tensorflow as tf
 import numpy as np
 import os
-import pandas as pd
+# import pandas as pd
 import math
 import tensorflow as tf
 
-model_kd = tf.keras.models.load_model('models\conv2d_kd')
-model_sd = tf.keras.models.load_model('models\conv2d_sd')
-model_hh = tf.keras.models.load_model('models\conv2d_hh')
+# model_kd = tf.keras.models.load_model('models\conv2d_kd')
+# model_sd = tf.keras.models.load_model('models\conv2d_sd')
+# model_hh = tf.keras.models.load_model('models\conv2d_hh')
 
 def get_onsets(audio_path, sr=44100):
   sig, sr = librosa.load(audio_path, sr=sr)
@@ -31,14 +31,20 @@ def parse_spectrogram(onset_times, fn_wav, sr=44100, n_fft=2048):
   return np.array(specs)
 
 def predict_classes(spectrograms: np.array):
+  pass
   # for spec in spectrograms:
-  preds_kd = model_kd.predict(spectrograms)
-  preds_sd = model_sd.predict(spectrograms)
-  preds_hh = model_hh.predict(spectrograms)
+  # preds_kd = model_kd.predict(spectrograms)
+  # preds_sd = model_sd.predict(spectrograms)
+  # preds_hh = model_hh.predict(spectrograms)
   
-  return preds_kd.round(), preds_sd.round(), preds_hh.round()
+  # return preds_kd.round(), preds_sd.round(), preds_hh.round()
 
-def create_tab(df, bpm):
+def create_tab(result_dict, bpm):
+  return \
+  "x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|", \
+  "----o-------o---|----o-------o---|----o-------o---|----o-------o---|", \
+  "o---o---o---o---|o---o---o---o---|o---o---o---o---|o---o---o---o---|"
+
   last_hit = math.ceil(df["onset_times"].max())
   num_beat = math.ceil(bpm * (last_hit/60))
   bars = []
@@ -74,17 +80,16 @@ def create_tab(df, bpm):
 
 def do_transcription(audio_file, sr=22050):
   # drum_path = split_drum(audio_file)
-  onset_times = get_onsets(audio_file, sr=sr)
-  specs = parse_spectrogram(onset_times, audio_file, sr=sr)
-#   print(specs.shape)    
-  preds_kd, preds_sd, preds_hh = predict_classes(specs)
+  # onset_times = get_onsets(audio_file, sr=sr)
+  # specs = parse_spectrogram(onset_times, audio_file, sr=sr)
+  # preds_kd, preds_sd, preds_hh = predict_classes(specs)
 
-  df = pd.DataFrame({
-      "onset_times": onset_times,
-      " KD ": preds_kd.reshape(-1),
-      " SD ": preds_sd.reshape(-1),
-      " HH ": preds_hh.reshape(-1),
-  })
+  # df = pd.DataFrame({
+  #     "onset_times": onset_times,
+  #     " KD ": preds_kd.reshape(-1),
+  #     " SD ": preds_sd.reshape(-1),
+  #     " HH ": preds_hh.reshape(-1),
+  # })
   bpm = 110
-  HH, SD, KD = create_tab(df, bpm)
-  return HH, SD, KD
+  HH, SD, KD = create_tab({}, bpm)
+  return HH, SD, KD, bpm

@@ -67,9 +67,7 @@ def train_test_model(params):
          )
   
   eval_result = model.evaluate(x_test, y_test[:, :3])
-  tf.keras.models.save_model(model, f"./grid_models/LSTM_{params['lstm_unit']}_unit_\
-  {params['lstm_activation']}_activation_\
-  {str(params['dropout']).replace('.', ',')}_dropout")
+  tf.keras.models.save_model(model, f"./grid_models/LSTM_{params['lstm_unit']}_unit_{params['lstm_activation']}_activation_{str(params['dropout']).replace('.', ',')}_dropout/")
 
   return history, eval_result
 
@@ -91,9 +89,7 @@ for lstm_unit in lstm_units:
 
             history, eval = train_test_model(hparams)
 
-            history_file = f"{lstm_unit}\
-            _{lstm_activation}\
-            _{str(dropout).replace('.', ',')}.pck"
+            history_file = f"{lstm_unit}_{lstm_activation}_{str(dropout).replace('.', ',')}.pck"
             history_file = open(history_file, "wb")
             pickle.dump(history, history_file)
             history_file.close()
@@ -108,5 +104,5 @@ for lstm_unit in lstm_units:
 data
 
 grid_search_result = pd.DataFrame(data)
-grid_search_result.to_csv("./search_result/grid_search_result.csv")
+grid_search_result.to_csv("./grid_search_result.csv")
 

@@ -1,0 +1,65 @@
+<html>
+<head>
+
+    {% block head %}
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+    <title>Drum Transcription App - Transcription Result</title>
+    {% endblock %}
+
+</head>
+<body>
+    <div class="content pl-3">
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <h3 class="my-2">Transcription for {{ song_title }}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    Guide: <a href="https://en.wikipedia.org/wiki/Drum_tablature" target="_blank">Drum Tablature Wiki</a><br>
+                    <b>BPM = {{ bpm }}</b><br>
+                </p>
+                <p style="font-size: 38px; font-family: monospace; letter-spacing: 10px; text-align: center;">
+                    {% for n in range(1, result["HH"].split("|")|length, 2) %}
+                        HH|{{ result["HH"].split("|")[n-1] }}|{{ result["HH"].split("|")[n] }}|<br>
+                        SD|{{ result["SD"].split("|")[n-1] }}|{{ result["SD"].split("|")[n] }}|<br>
+                        KD|{{ result["KD"].split("|")[n-1] }}|{{ result["KD"].split("|")[n] }}|<br>
+                        <br>
+                    {% endfor %}
+                </p>
+                <button>Download PDF</button>
+                <button>Download TXT</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Transcribe another song</h5>
+                    </div> 
+                    <div class="card-body">
+                        <form action="/predict" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <input type="file" class="form-control-file" accept=".wav,.mp3" id="audio_file" name="audio_file">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Transcribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    {% block scripts %}
+
+        <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+
+    {% endblock %}
+</body>
+</html>

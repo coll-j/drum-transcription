@@ -16,18 +16,27 @@ async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.post("/predict")
-async def predict_audio(upload_file: UploadFile = File(...)):
+async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
     try:
-        suffix = Path(upload_file.filename).suffix
+        suffix = Path(audio_file.filename).suffix
+        name = os.path.splitext(audio_file.filename)[0]
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-            shutil.copyfileobj(upload_file.file, tmp)
+            shutil.copyfileobj(audio_file.file, tmp)
             tmp_path = Path(tmp.name)
-            HH, SD, KD = do_transcription(tmp_path)
-            respond = {
+            HH, SD, KD, bpm = do_transcription(tmp_path)
+            result = {
                 "HH": HH,
                 "SD": SD,
                 "KD": KD
             }
+
+        return templates.TemplateResponse("result.html", 
+        {
+        "request": request, 
+        "bpm": bpm, 
+        "song_title": name, 
+        "result": result
+        })
 
     except Exception as e:
         exc_type, exc_obj, exc_tb = sys.exc_info()
