@@ -18,11 +18,11 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-training_file_mdb = open("MDB_44100.pickle", "rb")
+training_file_mdb = open("./datasets/MDB_44100.pickle", "rb")
 training_set_mdb = pickle.load(training_file_mdb)
 training_file_mdb.close()
 
-training_file_idmt = open("IDMT_44100.pickle", "rb")
+training_file_idmt = open("./datasets/IDMT_44100.pickle", "rb")
 training_set_idmt = pickle.load(training_file_idmt)
 training_file_idmt.close()
 
@@ -60,7 +60,7 @@ def train_test_model(params):
       metrics=['accuracy', tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
   
   history = model.fit(x_train, y_train[:, :3], 
-          epochs=10,
+          epochs=200,
           batch_size=8, 
           validation_data=(x_val, y_val[:, :3]),
           callbacks=[early]
@@ -75,9 +75,9 @@ def train_test_model(params):
 
 data = []
 
-lstm_units = [4]
-lstm_activations = ['relu']
-dropouts = [0.3]
+lstm_units = [2, 4, 8, 16, 128, 256]
+lstm_activations = ['relu', 'tanh']
+dropouts = [0.3, 0.2, 0.1, 0.4]
 
 for lstm_unit in lstm_units:
   for lstm_activation in lstm_activations:
@@ -87,6 +87,7 @@ for lstm_unit in lstm_units:
                 'lstm_activation': lstm_activation,
                 'dropout': dropout,
             }
+            print("using param:\n", hparams)
 
             history, eval = train_test_model(hparams)
 
