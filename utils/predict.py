@@ -6,7 +6,8 @@ import math
 import tensorflow as tf
 from utils.bpm_detection import detect_bpm
 
-model = tf.keras.models.load_model('models\LSTM')
+cwd = os.path.dirname(os.path.dirname(__file__))
+model = tf.keras.models.load_model(os.path.join(cwd, "models", "LSTM"))
 
 
 def get_onsets(audio_path, sr=44100):
