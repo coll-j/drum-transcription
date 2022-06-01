@@ -11,7 +11,8 @@ model = tf.keras.models.load_model('models\LSTM')
 
 def get_onsets(audio_path, sr=44100):
   sig, sr = librosa.load(audio_path, sr=sr)
-  onset_times = librosa.onset.onset_detect(sig, sr=sr, wait=1, pre_avg=1, post_avg=1, pre_max=1, post_max=1, units="time")
+  onset_times = librosa.onset.onset_detect(
+    sig, sr=sr, wait=1, pre_avg=7, post_avg=7, pre_max=1, post_max=1, delta=0.1, units="time")
 
   return onset_times
 
@@ -61,8 +62,8 @@ def create_tab(result_dict, bpm):
       idx = 1
       start = onset
     else:
-      idx = int(((onset - start)/gap_per_hit) + 1)
-      idx = int(idx + (idx/16))
+      idx = int(((onset - start)/gap_per_hit) + 1) # actual pos
+      idx = int(idx + (idx/16)) # escaping the bars
 
     try:
       if curr_KD == 1:
