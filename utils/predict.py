@@ -2,13 +2,15 @@ import librosa
 import tensorflow as tf
 import numpy as np
 import os
-# import pandas as pd
 import math
 import tensorflow as tf
+from utils.bpm_detection import detect_bpm
 
 # model_kd = tf.keras.models.load_model('models\conv2d_kd')
 # model_sd = tf.keras.models.load_model('models\conv2d_sd')
 # model_hh = tf.keras.models.load_model('models\conv2d_hh')
+model = tf.keras.models.load_model('models\LSTM')
+
 
 def get_onsets(audio_path, sr=44100):
   sig, sr = librosa.load(audio_path, sr=sr)
@@ -35,17 +37,14 @@ def predict_classes(spectrograms: np.array):
   # for spec in spectrograms:
   # preds_kd = model_kd.predict(spectrograms)
   # preds_sd = model_sd.predict(spectrograms)
-  # preds_hh = model_hh.predict(spectrograms)
+  preds = model.predict(spectrograms)
   
   # return preds_kd.round(), preds_sd.round(), preds_hh.round()
+  return preds[:, 0].round(), preds[:, 1].round(), preds[:, 2].round()
 
 def create_tab(result_dict, bpm):
-  return \
-  "x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|x-x-x-x-x-x-x-x-|", \
-  "----o-------o---|----o-------o---|----o-------o---|----o-------o---|", \
-  "o---o---o---o---|o---o---o---o---|o---o---o---o---|o---o---o---o---|"
 
-  last_hit = math.ceil(df["onset_times"].max())
+  last_hit = math.ceil(result_dict["onset_times"].max())
   num_beat = math.ceil(bpm * (last_hit/60))
   bars = []
   for i in range(math.ceil(num_beat/4)):
@@ -58,38 +57,44 @@ def create_tab(result_dict, bpm):
 
   gap_per_hit = (60/bpm)/4
 
-  for idx, row in df.iterrows():
+  idx = 0
+  for i in range(len(result_dict["onset_times"])):
+    onset = result_dict["onset_times"][i]
+    curr_KD = result_dict["KD"][i]
+    curr_SD = result_dict["SD"][i]
+    curr_HH = result_dict["HH"][i]
+
     if idx == 0:
       idx = 1
-      start = row["onset_times"]
+      start = onset
     else:
-      idx = int(((row["onset_times"] - start)/gap_per_hit) + 1)
+      idx = int(((onset - start)/gap_per_hit) + 1)
       idx = int(idx + (idx/16))
 
     try:
-      if row[" KD "] == 1:
+      if curr_KD == 1:
         KD[idx] = "x"
-      if row[" SD "] == 1:
+      if curr_SD == 1:
         SD[idx] = "x"
-      if row[" HH "] == 1:
+      if curr_HH == 1:
         HH[idx] = "x"
     except:
       pass
+    # idx += 1
 
   return "".join(HH), "".join(SD), "".join(KD)
 
-def do_transcription(audio_file, sr=22050):
+def do_transcription(audio_file, sr=44100):
   # drum_path = split_drum(audio_file)
-  # onset_times = get_onsets(audio_file, sr=sr)
-  # specs = parse_spectrogram(onset_times, audio_file, sr=sr)
-  # preds_kd, preds_sd, preds_hh = predict_classes(specs)
+  onset_times = get_onsets(audio_file, sr=sr)
+  specs = parse_spectrogram(onset_times, audio_file, sr=sr)
+  preds_kd, preds_sd, preds_hh = predict_classes(specs)
 
-  # df = pd.DataFrame({
-  #     "onset_times": onset_times,
-  #     " KD ": preds_kd.reshape(-1),
-  #     " SD ": preds_sd.reshape(-1),
-  #     " HH ": preds_hh.reshape(-1),
-  # })
-  bpm = 110
-  HH, SD, KD = create_tab({}, bpm)
+  bpm = detect_bpm(audio_file.__str__()).round()
+  HH, SD, KD = create_tab({
+    "onset_times": onset_times,
+    "KD": preds_kd,
+    "SD": preds_sd,
+    "HH": preds_hh
+  }, bpm)
   return HH, SD, KD, bpm

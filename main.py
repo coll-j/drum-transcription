@@ -35,7 +35,8 @@ async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
         "request": request, 
         "bpm": bpm, 
         "song_title": name, 
-        "result": result
+        "result": result,
+        "tmp_path": tmp_path
         })
 
     except Exception as e:

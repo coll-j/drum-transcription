@@ -44,7 +44,9 @@ def read_wav(filename):
     assert fs > 0
 
     # Read entire file and make into an array
-    samps = list(array.array("i", wf.readframes(nsamps)))
+    frames = wf.readframes(nsamps)
+    print("length: ", len(frames[: -(len(frames)%4)]))
+    samps = list(array.array("i", frames[: -(len(frames)%4)]))
 
     try:
         assert nsamps == len(samps)
@@ -122,28 +124,16 @@ def bpm_detector(data, fs):
 
     peak_ndx_adjusted = peak_ndx[0] + min_ndx
     bpm = 60.0 / peak_ndx_adjusted * (fs / max_decimation)
-    print(bpm)
     return bpm, correl
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process .wav file to determine the Beats Per Minute.")
-    parser.add_argument("--filename", required=True, help=".wav file for processing")
-    parser.add_argument(
-        "--window",
-        type=float,
-        default=3,
-        help="Size of the the window (seconds) that will be scanned to determine the bpm. Typically less than 10 seconds. [3]",
-    )
-
-    args = parser.parse_args()
-    samps, fs = read_wav(args.filename)
+def detect_bpm(audio_fn, window=3):
+    samps, fs = read_wav(audio_fn)
     data = []
     correl = []
     bpm = 0
     n = 0
     nsamps = len(samps)
-    window_samps = int(args.window * fs)
+    window_samps = int(window * fs)
     samps_ndx = 0  # First sample in window_ndx
     max_window_ndx = math.floor(nsamps / window_samps)
     bpms = numpy.zeros(max_window_ndx)
@@ -170,8 +160,4 @@ if __name__ == "__main__":
         n = n + 1
 
     bpm = numpy.median(bpms)
-    print("Completed!  Estimated Beats Per Minute:", bpm)
-
-    n = range(0, len(correl))
-    # plt.plot(n, abs(correl))
-    # plt.show(block=True)
+    return bpm
