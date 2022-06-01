@@ -8,3 +8,6 @@ search_results/*
 *.pck
 datasets/
 datasets/*
+grid_search_result.csv
+misc/*
+misc
