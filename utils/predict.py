@@ -6,9 +6,6 @@ import math
 import tensorflow as tf
 from utils.bpm_detection import detect_bpm
 
-# model_kd = tf.keras.models.load_model('models\conv2d_kd')
-# model_sd = tf.keras.models.load_model('models\conv2d_sd')
-# model_hh = tf.keras.models.load_model('models\conv2d_hh')
 model = tf.keras.models.load_model('models\LSTM')
 
 
@@ -34,12 +31,8 @@ def parse_spectrogram(onset_times, fn_wav, sr=44100, n_fft=2048):
 
 def predict_classes(spectrograms: np.array):
   pass
-  # for spec in spectrograms:
-  # preds_kd = model_kd.predict(spectrograms)
-  # preds_sd = model_sd.predict(spectrograms)
   preds = model.predict(spectrograms)
   
-  # return preds_kd.round(), preds_sd.round(), preds_hh.round()
   return preds[:, 0].round(), preds[:, 1].round(), preds[:, 2].round()
 
 def create_tab(result_dict, bpm):
@@ -80,25 +73,17 @@ def create_tab(result_dict, bpm):
         HH[idx] = "x"
     except:
       pass
-    # idx += 1
 
   return "".join(HH), "".join(SD), "".join(KD)
 
 def do_transcription(audio_file, sr=44100):
-  # drum_path = split_drum(audio_file)
-  print("test 1")
   onset_times = get_onsets(audio_file, sr=sr)
-  print("test 2")
   
   specs = parse_spectrogram(onset_times, audio_file, sr=sr)
-  print("test 3")
   
   preds_kd, preds_sd, preds_hh = predict_classes(specs)
-  print(preds_kd, preds_sd, preds_hh)
-  print("test 4")
 
   bpm = detect_bpm(audio_file.__str__()).round()
-  print("test 5")
 
   HH, SD, KD = create_tab({
     "onset_times": onset_times,
