@@ -45,8 +45,9 @@ def read_wav(filename):
 
     # Read entire file and make into an array
     frames = wf.readframes(nsamps)
-    print("length: ", len(frames[: -(len(frames)%4)]))
-    samps = list(array.array("i", frames[: -(len(frames)%4)]))
+    frames = frames[: -(len(frames)%4)] if len(frames)%4 else frames
+    print("length: ", len(frames))
+    samps = list(array.array("i", frames))
 
     try:
         assert nsamps == len(samps)

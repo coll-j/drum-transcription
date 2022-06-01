@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile, Request, Response
 from fastapi.responses import HTMLResponse
 from utils.predict import do_transcription
 import sys
@@ -8,6 +8,8 @@ from pathlib import Path
 import shutil
 from fastapi.templating import Jinja2Templates
 
+db = []
+
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
@@ -15,11 +17,16 @@ templates = Jinja2Templates(directory="templates")
 async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
+@app.get("/audio")
+async def audio_endpoint():
+    return Response(content=db[-1], media_type="audio/wav")
+
 @app.post("/predict")
 async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
     try:
         suffix = Path(audio_file.filename).suffix
         name = os.path.splitext(audio_file.filename)[0]
+        
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             shutil.copyfileobj(audio_file.file, tmp)
             tmp_path = Path(tmp.name)
@@ -30,13 +37,17 @@ async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
                 "KD": KD
             }
 
+        await audio_file.seek(0)
+        contents = await audio_file.read()
+        db.append(contents)
+
         return templates.TemplateResponse("result.html", 
         {
         "request": request, 
         "bpm": bpm, 
         "song_title": name, 
         "result": result,
-        "tmp_path": tmp_path
+        "tmp_path": audio_file.filename
         })
 
     except Exception as e:

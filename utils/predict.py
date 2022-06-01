@@ -86,11 +86,20 @@ def create_tab(result_dict, bpm):
 
 def do_transcription(audio_file, sr=44100):
   # drum_path = split_drum(audio_file)
+  print("test 1")
   onset_times = get_onsets(audio_file, sr=sr)
+  print("test 2")
+  
   specs = parse_spectrogram(onset_times, audio_file, sr=sr)
+  print("test 3")
+  
   preds_kd, preds_sd, preds_hh = predict_classes(specs)
+  print(preds_kd, preds_sd, preds_hh)
+  print("test 4")
 
   bpm = detect_bpm(audio_file.__str__()).round()
+  print("test 5")
+
   HH, SD, KD = create_tab({
     "onset_times": onset_times,
     "KD": preds_kd,
