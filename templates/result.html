@@ -32,8 +32,8 @@
                         <br>
                     {% endfor %}
                 </p>
-                <button>Download PDF</button>
-                <button id="txt">Download TXT</button>
+                <!-- <button>Download PDF</button> -->
+                <button id="txt">Download as TXT</button>
             </div>
         </div>
         <div class="row">
@@ -64,7 +64,16 @@
     <script>
         document.querySelector("#txt").addEventListener("click", function(){
             var tab = document.getElementById("tab").innerHTML;
-            console.log(tab);
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(tab));
+            element.setAttribute('download', "{{ song_title }}_tab.txt");
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
         })
 
         document.querySelector("#audio_file").addEventListener("change", function(){
