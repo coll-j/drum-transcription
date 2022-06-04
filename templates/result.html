@@ -47,11 +47,31 @@
                             <div class="form-group">
                                 <input type="file" class="form-control-file" accept=".wav,.mp3" id="audio_file" name="audio_file">
                             </div>
-                            <button type="submit" class="btn btn-primary my-2">Transcribe</button>
+                            <button type="submit" id="trans" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Transcribe</button>
                         </form>
                     </div>
                 </div>
             </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Processing your audio</h5>
+            </div>
+            <div class="modal-body" >
+                <div class="spinner-border text-primary" role="status" style="display: inline-block;">
+                </div>
+                <p id="loading-text" class="align-middle" style="display: inline-block;">
+                    Analyzing your audio...
+                </p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+        </div>
     </div>
 
     {% block scripts %}
@@ -63,6 +83,25 @@
     
 
     <script>
+        document.querySelector("#trans").addEventListener("click", function(){
+            var text = [
+                "Processing your audio...", 
+                "Detecting onsets...", 
+                "Classifying onsets...",
+                "Generating transcription..."];
+            var counter = 0;
+            var elem = document.getElementById("loading-text");
+            var inst = setInterval(change, 3000);
+
+            function change() {
+            elem.innerHTML = text[counter];
+            counter++;
+            if (counter >= text.length) {
+                counter = text.length - 1;
+                // clearInterval(inst); // uncomment this if you want to stop refreshing after one cycle
+            }
+        }
+        });
         document.querySelector("#txt").addEventListener("click", function(){
             var tab = document.getElementById("tab");
             tab_text = (tab.innerText || tab.textContent)
