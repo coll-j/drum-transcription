@@ -22,7 +22,7 @@
                 <p>
                     Guide: <a href="https://en.wikipedia.org/wiki/Drum_tablature" target="_blank">Drum Tablature Wiki</a><br>
                     <b>BPM = {{ bpm }}</b><br>
-                    <audio controls ><source src="/audio" type="audio/wav">Your browser does not support the audio element.</audio>
+                    <audio controls ><source id="audio_play" src="" type="audio/wav">Your browser does not support the audio element.</audio>
                 </p>
                 <p style="font-size: 38px; font-family: monospace; letter-spacing: 10px; text-align: center;">
                     {% for n in range(1, result["HH"].split("|")|length, 2) %}
@@ -61,6 +61,16 @@
     integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
     crossorigin="anonymous"></script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const audioFile = localStorage.getItem("audio_file");
+            console.log("test");
+            if (audioFile) {
+                console.log(audioFile);
+                document.querySelector("#audio_file").setAttribute("src", audioFile);
+            }
+        })
+    </script>
     {% endblock %}
 </body>
 </html>
