@@ -8,7 +8,6 @@ from pathlib import Path
 import shutil
 from fastapi.templating import Jinja2Templates
 
-db = []
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -16,10 +15,6 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
-
-@app.get("/audio")
-async def audio_endpoint():
-    return Response(content=db[-1], media_type="audio/wav")
 
 @app.post("/predict")
 async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
@@ -36,10 +31,6 @@ async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
                 "SD": SD,
                 "KD": KD
             }
-
-        await audio_file.seek(0)
-        contents = await audio_file.read()
-        db.append(contents)
 
         return templates.TemplateResponse("result.html", 
         {

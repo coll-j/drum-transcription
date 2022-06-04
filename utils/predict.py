@@ -101,6 +101,7 @@ def do_transcription(audio_file, sr=44100):
     "HH": preds_hh
   }, bpm)
 
-  os.remove(audio_file)
-  
+  # subprocess.call(['del', audio_file])
+
+
   return HH, SD, KD, bpm
