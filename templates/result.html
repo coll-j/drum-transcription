@@ -22,9 +22,9 @@
                 <p>
                     Guide: <a href="https://en.wikipedia.org/wiki/Drum_tablature" target="_blank">Drum Tablature Wiki</a><br>
                     <b>BPM = {{ bpm }}</b><br>
-                    <audio controls ><source id="audio_play" src="" type="audio/wav">Your browser does not support the audio element.</audio>
+                    <audio controls id="audio"><source id="audio_play" src="" type="audio/mp3">Your browser does not support the audio element.</audio>
                 </p>
-                <p style="font-size: 38px; font-family: monospace; letter-spacing: 10px; text-align: center;">
+                <p id="tab" style="font-size: 38px; font-family: monospace; letter-spacing: 10px; text-align: center;">
                     {% for n in range(1, result["HH"].split("|")|length, 2) %}
                         HH|{{ result["HH"].split("|")[n-1] }}|{{ result["HH"].split("|")[n] }}|<br>
                         SD|{{ result["SD"].split("|")[n-1] }}|{{ result["SD"].split("|")[n] }}|<br>
@@ -33,7 +33,7 @@
                     {% endfor %}
                 </p>
                 <button>Download PDF</button>
-                <button>Download TXT</button>
+                <button id="txt">Download TXT</button>
             </div>
         </div>
         <div class="row">
@@ -62,12 +62,31 @@
     crossorigin="anonymous"></script>
 
     <script>
+        document.querySelector("#txt").addEventListener("click", function(){
+            var tab = document.getElementById("tab").innerHTML;
+            console.log(tab);
+        })
+
+        document.querySelector("#audio_file").addEventListener("change", function(){
+            const reader = new FileReader();
+
+            reader.addEventListener("load", () => {
+                console.log("saving audio")
+                localStorage.setItem("audio_file", reader.result);
+            });
+
+            reader.readAsDataURL(this.files[0]);
+        })
+
         document.addEventListener("DOMContentLoaded", () => {
             const audioFile = localStorage.getItem("audio_file");
-            console.log("test");
             if (audioFile) {
-                console.log(audioFile);
-                document.querySelector("#audio_file").setAttribute("src", audioFile);
+                var audio = document.getElementById('audio');
+
+                var source = document.getElementById('audio_play');
+                source.src = audioFile;
+
+                audio.load();
             }
         })
     </script>

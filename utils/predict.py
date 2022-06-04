@@ -1,3 +1,4 @@
+import subprocess
 import librosa
 import tensorflow as tf
 import numpy as np
@@ -79,10 +80,16 @@ def create_tab(result_dict, bpm):
   return "".join(HH), "".join(SD), "".join(KD)
 
 def do_transcription(audio_file, sr=44100):
+  # conver mp3 to wav
+  dst = audio_file.__str__().replace(".mp3", ".wav")
+  subprocess.call(['ffmpeg', '-i', audio_file.__str__(), dst])
+
+  audio_file = dst
+
   onset_times = get_onsets(audio_file, sr=sr)
   
   specs = parse_spectrogram(onset_times, audio_file, sr=sr)
-  
+
   preds_kd, preds_sd, preds_hh = predict_classes(specs)
 
   bpm = detect_bpm(audio_file.__str__()).round()
@@ -93,4 +100,7 @@ def do_transcription(audio_file, sr=44100):
     "SD": preds_sd,
     "HH": preds_hh
   }, bpm)
+
+  os.remove(audio_file)
+  
   return HH, SD, KD, bpm
