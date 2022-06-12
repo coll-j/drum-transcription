@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Request, Response
+from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.responses import HTMLResponse
 from utils.predict import do_transcription
 import sys
@@ -18,7 +18,7 @@ async def root(request: Request):
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.post("/predict")
-async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
+async def predict_audio(request: Request, audio_file: UploadFile = File(...), bpm: int = Form(None)):
     try:
         suffix = Path(audio_file.filename).suffix
         name = os.path.splitext(audio_file.filename)[0]
@@ -26,7 +26,7 @@ async def predict_audio(request: Request, audio_file: UploadFile = File(...)):
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             shutil.copyfileobj(audio_file.file, tmp)
             tmp_path = Path(tmp.name)
-            HH, SD, KD, bpm = do_transcription(tmp_path)
+            HH, SD, KD, bpm = do_transcription(tmp_path, bpm=bpm)
             result = {
                 "HH": HH,
                 "SD": SD,

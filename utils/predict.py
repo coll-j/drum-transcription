@@ -60,8 +60,8 @@ def create_tab(result_dict, bpm):
     curr_SD = result_dict["SD"][i]
     curr_HH = result_dict["HH"][i]
 
-    if idx == 0:
-      idx = 1
+    if i == 0:
+      # idx = 1
       start = onset
     else:
       idx = int(((onset - start)/gap_per_hit) + 1) # actual pos
@@ -79,7 +79,7 @@ def create_tab(result_dict, bpm):
 
   return "".join(HH), "".join(SD), "".join(KD)
 
-def do_transcription(audio_file, sr=44100):
+def do_transcription(audio_file, bpm=None, sr=44100):
   # conver mp3 to wav
   dst = audio_file.__str__().replace(".mp3", ".wav")
   subprocess.call(['ffmpeg', '-i', audio_file.__str__(), dst])
@@ -92,7 +92,8 @@ def do_transcription(audio_file, sr=44100):
 
   preds_kd, preds_sd, preds_hh = predict_classes(specs)
 
-  bpm = detect_bpm(audio_file.__str__()).round()
+  if not bpm:
+    bpm = detect_bpm(audio_file.__str__()).round()
 
   HH, SD, KD = create_tab({
     "onset_times": onset_times,
