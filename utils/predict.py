@@ -51,7 +51,7 @@ def create_tab(result_dict, bpm):
   SD = list("|".join(bars))
   KD = list("|".join(bars))
 
-  gap_per_hit = (60/bpm)/4
+  gap_per_hit = (60/bpm)/4 # gap per 1e&a dkk
 
   idx = 0
   for i in range(len(result_dict["onset_times"])):

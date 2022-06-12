@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h5>Upload</h5>
+            </div> 
+            <div class="card-body">
+                <form action="/predict" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" class="form-control-file" accept=".mp3" id="audio_file" name="audio_file">
+                        <p>Maximum file size: 4 MB</p>
+                        <p id="danger-text" class="text-danger" style="display: none;">File size is too large. Maximum file size is 4 MB.</p>
+                    </div>
+                    <button type="submit" id="trans" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" disabled>Transcribe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Processing your audio</h5>
+            </div>
+            <div class="modal-body" >
+                <div class="spinner-border text-primary" role="status" style="display: inline-block;">
+                </div>
+                <p id="loading-text" class="align-middle" style="display: inline-block;">
+                    Analyzing your audio...
+                </p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

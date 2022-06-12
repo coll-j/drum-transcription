@@ -51,87 +51,18 @@
                 </p>
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Upload</h5>
-                    </div> 
-                    <div class="card-body">
-                        <form action="/predict" method="post" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <input type="file" class="form-control-file" accept=".wav,.mp3" id="audio_file" name="audio_file">
-                            </div>
-                            <button type="submit" id="trans" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Transcribe</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        {% include "upload.html" %}
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Processing your audio</h5>
-            </div>
-            <div class="modal-body" >
-                <div class="spinner-border text-primary" role="status" style="display: inline-block;">
-                </div>
-                <p id="loading-text" class="align-middle" style="display: inline-block;">
-                    Analyzing your audio...
-                </p>
-            </div>
-            <div class="modal-footer">
-            </div>
-        </div>
-        </div>
-    </div>
 
     {% block scripts %}
 
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>
 
-    <script>
-        $('#exampleModal').on('shown.bs.modal', function () {
-            $('#trans').trigger('focus')
-        })
-
-        document.querySelector("#trans").addEventListener("click", function(){
-            var text = [
-                "Processing your audio...", 
-                "Detecting onsets...", 
-                "Classifying onsets...",
-                "Generating transcription..."];
-            var counter = 0;
-            var elem = document.getElementById("loading-text");
-            var inst = setInterval(change, 3000);
-
-            function change() {
-            elem.innerHTML = text[counter];
-            counter++;
-            if (counter >= text.length) {
-                counter = text.length - 1;
-                // clearInterval(inst); // uncomment this if you want to stop refreshing after one cycle
-            }
-        }
-        })
-
-        document.querySelector("#audio_file").addEventListener("change", function(){
-            const reader = new FileReader();
-
-            reader.addEventListener("load", () => {
-                console.log("saving audio")
-                localStorage.setItem("audio_file", reader.result);
-            });
-
-            reader.readAsDataURL(this.files[0]);
-        })
-    </script>
+    <script src="templates/upload.js"></script>
     {% endblock %}
 </body>
 </html>

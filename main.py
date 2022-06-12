@@ -7,9 +7,10 @@ from tempfile import NamedTemporaryFile
 from pathlib import Path
 import shutil
 from fastapi.templating import Jinja2Templates
-
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
+app.mount("/templates", StaticFiles(directory="templates"), name="templates")
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
