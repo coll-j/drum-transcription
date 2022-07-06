@@ -6,7 +6,7 @@ from tensorflow.python.keras.models import load_model
 from numpy import max, array, expand_dims
 from os.path import dirname, join as path_join
 from math import ceil
-from utils.bpm_detection import detect_bpm
+# from utils.bpm_detection import detect_bpm
 
 cwd = dirname(dirname(__file__))
 model = load_model(path_join(cwd, "models", "LSTM"))

@@ -1,9 +1,9 @@
 fastapi
 uvicorn[standard]
 tensorflow-cpu==2.8.0
-protobuf==3.20.1
-PyWavelets
+# protobuf==3.20.1
+# PyWavelets
 librosa
-scipy
+# scipy
 python-multipart
 jinja2
