@@ -11,3 +11,6 @@ datasets/*
 grid_search_result.csv
 misc/*
 misc
+/.heroku
+/.apt
+/.profile.d
