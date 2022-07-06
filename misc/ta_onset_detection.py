@@ -24,13 +24,12 @@ BEATS_ANNOTATION_DIR = "./MDBDrums/MDB Drums/annotations/beats"
 """# Grid search"""
 
 grid_params = {
-    "pre_max": [i for i in range(1, 2)],
-    "post_max": [i for i in range(1, 2)],
-    "pre_avg": [i for i in range(1, 2)],
-    "post_avg": [i for i in range(1, 2)],
-    # "delta": [0.1, 0.2, 0.3],
-    "delta": [0.1],
-    "wait": [i for i in range(1, 2)],
+    "pre_max": [i for i in range(1, 8)],
+    "post_max": [i for i in range(1, 8)],
+    "pre_avg": [i for i in range(1, 8)],
+    "post_avg": [i for i in range(1, 8)],
+    "delta": [0.1, 0.2, 0.3],
+    "wait": [i for i in range(1, 8)],
 }
 
 

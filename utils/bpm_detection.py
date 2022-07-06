@@ -17,21 +17,20 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 
-import argparse
-import array
-import math
-import wave
+from array import array
+from math import floor
+from wave import open as wave_open
 
 # import matplotlib.pyplot as plt
-import numpy
-import pywt
-from scipy import signal
+from numpy import amax, where, zeros, mean, correlate, median
+from pywt import dwt
+from scipy.signal import lfilter
 
 
 def read_wav(filename):
     # open file, get metadata for audio
     try:
-        wf = wave.open(filename, "rb")
+        wf = wave_open(filename, "rb")
     except IOError as e:
         print(e)
         return
@@ -47,7 +46,7 @@ def read_wav(filename):
     frames = wf.readframes(nsamps)
     frames = frames[: -(len(frames)%4)] if len(frames)%4 else frames
     print("length: ", len(frames))
-    samps = list(array.array("i", frames))
+    samps = list(array("i", frames))
 
     try:
         assert nsamps == len(samps)
@@ -65,10 +64,10 @@ def no_audio_data():
 
 # simple peak detection
 def peak_detect(data):
-    max_val = numpy.amax(abs(data))
-    peak_ndx = numpy.where(data == max_val)
+    max_val = amax(abs(data))
+    peak_ndx = where(data == max_val)
     if len(peak_ndx[0]) == 0:  # if nothing found then the max must be negative
-        peak_ndx = numpy.where(data == -max_val)
+        peak_ndx = where(data == -max_val)
     return peak_ndx
 
 
@@ -79,45 +78,45 @@ def bpm_detector(data, fs):
     cD_sum = []
     levels = 4
     max_decimation = 2 ** (levels - 1)
-    min_ndx = math.floor(60.0 / 220 * (fs / max_decimation))
-    max_ndx = math.floor(60.0 / 40 * (fs / max_decimation))
+    min_ndx = floor(60.0 / 220 * (fs / max_decimation))
+    max_ndx = floor(60.0 / 40 * (fs / max_decimation))
 
     for loop in range(0, levels):
         cD = []
         # 1) DWT
         if loop == 0:
-            [cA, cD] = pywt.dwt(data, "db4")
+            [cA, cD] = dwt(data, "db4")
             cD_minlen = len(cD) / max_decimation + 1
-            cD_sum = numpy.zeros(math.floor(cD_minlen))
+            cD_sum = zeros(floor(cD_minlen))
         else:
-            [cA, cD] = pywt.dwt(cA, "db4")
+            [cA, cD] = dwt(cA, "db4")
 
         # 2) Filter
-        cD = signal.lfilter([0.01], [1 - 0.99], cD)
+        cD = lfilter([0.01], [1 - 0.99], cD)
 
         # 4) Subtract out the mean.
 
         # 5) Decimate for reconstruction later.
         cD = abs(cD[:: (2 ** (levels - loop - 1))])
-        cD = cD - numpy.mean(cD)
+        cD = cD - mean(cD)
 
         # 6) Recombine the signal before ACF
         #    Essentially, each level the detail coefs (i.e. the HPF values) are concatenated to the beginning of the array
-        cD_sum = cD[0 : math.floor(cD_minlen)] + cD_sum
+        cD_sum = cD[0 : floor(cD_minlen)] + cD_sum
 
     if [b for b in cA if b != 0.0] == []:
         return no_audio_data()
 
     # Adding in the approximate data as well...
-    cA = signal.lfilter([0.01], [1 - 0.99], cA)
+    cA = lfilter([0.01], [1 - 0.99], cA)
     cA = abs(cA)
-    cA = cA - numpy.mean(cA)
-    cD_sum = cA[0 : math.floor(cD_minlen)] + cD_sum
+    cA = cA - mean(cA)
+    cD_sum = cA[0 : floor(cD_minlen)] + cD_sum
 
     # ACF
-    correl = numpy.correlate(cD_sum, cD_sum, "full")
+    correl = correlate(cD_sum, cD_sum, "full")
 
-    midpoint = math.floor(len(correl) / 2)
+    midpoint = floor(len(correl) / 2)
     correl_midpoint_tmp = correl[midpoint:]
     peak_ndx = peak_detect(correl_midpoint_tmp[min_ndx:max_ndx])
     if len(peak_ndx) > 1:
@@ -136,8 +135,8 @@ def detect_bpm(audio_fn, window=3):
     nsamps = len(samps)
     window_samps = int(window * fs)
     samps_ndx = 0  # First sample in window_ndx
-    max_window_ndx = math.floor(nsamps / window_samps)
-    bpms = numpy.zeros(max_window_ndx)
+    max_window_ndx = floor(nsamps / window_samps)
+    bpms = zeros(max_window_ndx)
 
     # Iterate through all windows
     for window_ndx in range(0, max_window_ndx):
@@ -160,5 +159,5 @@ def detect_bpm(audio_fn, window=3):
         # Counter for debug...
         n = n + 1
 
-    bpm = numpy.median(bpms)
+    bpm = median(bpms)
     return bpm

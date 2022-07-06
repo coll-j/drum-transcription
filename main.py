@@ -1,11 +1,11 @@
 from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.responses import HTMLResponse
 from utils.predict import do_transcription
-import sys
-import os
+from sys import exc_info
+from os.path import split, splitext
 from tempfile import NamedTemporaryFile
 from pathlib import Path
-import shutil
+from shutil import copyfileobj
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -21,10 +21,10 @@ async def root(request: Request):
 async def predict_audio(request: Request, audio_file: UploadFile = File(...), bpm: int = Form(None)):
     try:
         suffix = Path(audio_file.filename).suffix
-        name = os.path.splitext(audio_file.filename)[0]
+        name = splitext(audio_file.filename)[0]
         
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
-            shutil.copyfileobj(audio_file.file, tmp)
+            copyfileobj(audio_file.file, tmp)
             tmp_path = Path(tmp.name)
             HH, SD, KD, bpm = do_transcription(tmp_path, bpm=bpm)
             result = {
@@ -43,8 +43,8 @@ async def predict_audio(request: Request, audio_file: UploadFile = File(...), bp
         })
 
     except Exception as e:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        exc_type, exc_obj, exc_tb = exc_info()
+        fname = split(exc_tb.tb_frame.f_code.co_filename)[1]
         respond = {
             "msg": str(e),
             "file": fname,

@@ -20,11 +20,11 @@
         <div class="row">
             <div class="col-sm-12">
                 <p>
-                    This is a drum transcription app as my undergraduate final thesis outcome.
-                    This app uses the <i>segment and classify</i> method.<br>
+                    This is a drum transcription app for my undergraduate final thesis outcome.
+                    This app uses the <i>segment and classify</i> method to transcribe drum audio.<br>
                     Hence, the audio is first segmented based on the detected onsets
                     and the segment is classified into snare drums, hi-hats, and/or bass drums.<br>
-                    For the classification purposes, this app uses deep learning with [TBD] architecture trained on
+                    For the classification purposes, this app uses deep learning with LSTM architecture trained on
                     <a href="https://github.com/CarlSouthall/MDBDrums">MDB Drums</a> and 
                     <a href="https://www.idmt.fraunhofer.de/en/publications/datasets/drums.html">IDMT-SMT</a> datasets.
                     <br><br>
@@ -34,18 +34,19 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <h4>How to use this app</h4>
+                <h4>Disclaimer:</h4>
                 <p>
-                    The app is divided into three main sections:
                     <ol>
                         <li>
-                            <b>Upload</b> - Upload an audio file to be transcribed.
+                            <b>Audio</b> - This app was built for drum only mp3 audio.
                         </li>
                         <li>
-                            <b>Transcription</b> - The audio is segmented and classified.
+                            <b>Time Signature</b> - This app assumes that the audio is always a 4/4 music.
                         </li>
                         <li>
-                            <b>Download</b> - Download the transcription results.
+                            <b>Transcription</b> - Transcription works by first detecting the onset 
+                            on the audio and classify them. Bare in mind that the onset detection accuracy
+                            is still relatively low.
                         </li>
                     </ol>
                 </p>

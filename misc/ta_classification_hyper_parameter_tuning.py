@@ -8,7 +8,7 @@ Original file is located at
 """
 
 import tensorflow as tf
-from tensorflow.keras import Sequential, Model
+from tensorflow.keras import Sequential
 from tensorflow.keras.layers import *
 from tensorflow.keras.regularizers import *
 from tensorflow.keras.callbacks import EarlyStopping
@@ -101,7 +101,6 @@ for lstm_unit in lstm_units:
             
             data.append(hparams)
 
-data
 
 grid_search_result = pd.DataFrame(data)
 grid_search_result.to_csv("./grid_search_result.csv")
