@@ -8,6 +8,7 @@ from pathlib import Path
 from shutil import copyfileobj
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+import psutil
 
 app = FastAPI()
 app.mount("/templates", StaticFiles(directory="templates"), name="templates")
@@ -15,6 +16,7 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def root(request: Request):
+    print("mem used:", dict(psutil.virtual_memory()._asdict()))
     return templates.TemplateResponse("home.html", {"request": request})
 
 @app.post("/predict")

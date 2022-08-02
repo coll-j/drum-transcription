@@ -3,10 +3,10 @@ from librosa import load as load_audio, power_to_db
 from librosa.onset import onset_detect
 from librosa.feature import melspectrogram
 from tensorflow.python.keras.models import load_model
-from numpy import max, array
+from numpy import max, array, expand_dims
 from os.path import dirname, join as path_join
 from math import ceil
-from utils.bpm_detection import detect_bpm
+# from utils.bpm_detection import detect_bpm
 
 cwd = dirname(dirname(__file__))
 model = load_model(path_join(cwd, "models", "LSTM"))
@@ -21,7 +21,7 @@ def get_onsets(audio_path, sr=44100):
 
 def parse_spectrogram(onset_times, fn_wav, sr=44100, n_fft=2048):
   delta = 0.15 # second
-  specs = []
+  # specs = []
   for onset in onset_times:
     onset = onset-0.025
     onset = 0 if onset < 0 else onset
@@ -30,9 +30,11 @@ def parse_spectrogram(onset_times, fn_wav, sr=44100, n_fft=2048):
     if S.shape[1] == 13:
       ps_db= power_to_db(S, ref=max)
 
-      specs.append(ps_db)
+      yield ps_db
 
-  return array(specs)
+      # specs.append(ps_db)
+
+  # return array(specs)
 
 def predict_classes(spectrograms: array):
   pass
@@ -88,9 +90,15 @@ def do_transcription(audio_file, bpm=None, sr=44100):
 
   onset_times = get_onsets(audio_file, sr=sr)
   
-  specs = parse_spectrogram(onset_times, audio_file, sr=sr)
+  preds_kd = []
+  preds_sd = []
+  preds_hh = []
+  for specs in parse_spectrogram(onset_times, audio_file, sr=sr):
+    kd, sd, hh = predict_classes(expand_dims(specs, axis=0))
+    preds_kd.append(kd)
+    preds_sd.append(sd)
+    preds_hh.append(hh)
 
-  preds_kd, preds_sd, preds_hh = predict_classes(specs)
 
   if not bpm:
     bpm = detect_bpm(audio_file.__str__()).round()
