@@ -51,11 +51,33 @@ Topics Discussed:
 
 #### Spectrogram
 
-| Label | MDB Drums | IDMT-SMT Drums |
-| ------ | ------ | ------ |
-| KD | [mdb-kd](readme/mdb-kd.png) | [idmt-kd](readme/idmt-kd.png) |
-| SD | [mdb-kd](readme/mdb-sd.png) | [idmt-kd](readme/idmt-sd.png) |
-| HH | [mdb-kd](readme/mdb-hh.png) | [idmt-kd](readme/idmt-hh.png) |
+<table>
+    <thead>
+        <tr>
+            <th>Label</th>
+            <th>MDB Drums</th>
+            <th>IDMT-SMT Drums</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th>KD</th>
+            <th><img src="readme/readme/mdb-kd.png"></th>
+            <th><img src="readme/readme/idmt-kd.png"></th>
+        </tr>
+        <tr>
+            <th>SD</th>
+            <th><img src="readme/readme/mdb-sd.png"></th>
+            <th><img src="readme/readme/idmt-sd.png"></th>
+        </tr>
+        <tr>
+            <th>HH</th>
+            <th><img src="readme/readme/mdb-hh.png"></th>
+            <th><img src="readme/readme/idmt-hh.png"></th>
+        </tr>
+    </tbody>
+</table>
+
 
 Above is the visualization of the median of the spectrograms. This was taken expecially from single label onsets. Hence, there are no overlapping labels in this visualization. Although IDMT-SMT Drums audio comes from different kinds of drums, we can see that there is a visible pattern in each label coming from both datasets here. You can find the code for visualization [here](https://colab.research.google.com/drive/1R3ZFVlcucahInK0dWMEvQ6JjB3be72p4). Bare in mind I haven't clean it up.
 
@@ -72,7 +94,7 @@ Above is the visualization of the median of the spectrograms. This was taken exp
         <tr>
             <td rowspan=5>MDB Drums</td>
             <td>LSTM</td>
-            <td>**0.7981**</td>
+            <td><b>0.7981</b></td>
         </tr>
         <tr>
             <td>BiLSTM</td>
@@ -109,7 +131,7 @@ Above is the visualization of the median of the spectrograms. This was taken exp
         </tr>
         <tr>
 	        <td>Conv2D-BiLSTM</td>
-            <td>**0.9209**</td>
+            <td><b>0.9209</b></td>
         </tr>
     </tbody>
 </table>
