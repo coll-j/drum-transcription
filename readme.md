@@ -62,18 +62,18 @@ Topics Discussed:
     <tbody>
         <tr>
             <th>KD</th>
-            <th><img src="readme/readme/mdb-kd.png"></th>
-            <th><img src="readme/readme/idmt-kd.png"></th>
+            <th><img src="readme/mdb-kd.png"></th>
+            <th><img src="readme/idmt-kd.png"></th>
         </tr>
         <tr>
             <th>SD</th>
-            <th><img src="readme/readme/mdb-sd.png"></th>
-            <th><img src="readme/readme/idmt-sd.png"></th>
+            <th><img src="readme/mdb-sd.png"></th>
+            <th><img src="readme/idmt-sd.png"></th>
         </tr>
         <tr>
             <th>HH</th>
-            <th><img src="readme/readme/mdb-hh.png"></th>
-            <th><img src="readme/readme/idmt-hh.png"></th>
+            <th><img src="readme/mdb-hh.png"></th>
+            <th><img src="readme/idmt-hh.png"></th>
         </tr>
     </tbody>
 </table>
